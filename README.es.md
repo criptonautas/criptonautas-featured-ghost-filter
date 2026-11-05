@@ -18,7 +18,7 @@ Los rostros y el material de terceros no llevan ninguna de las dos etiquetas.
 
 ## Instalar
 
-GitHub Actions prueba la imagen y la publica en `ghcr.io/somos-criptonautas/criptonautas-featured-ghost-filter` en cada push a `main`. En el servidor no se construye nada.
+GitHub Actions prueba la imagen y la publica en `ghcr.io/criptonautas/criptonautas-featured-ghost-filter` en cada push a `main`. En el servidor no se construye nada.
 
 Pega el servicio del [`docker-compose.yml`](docker-compose.yml) de este repo bajo `services:` en el `docker-compose.yml` donde corre n8n. Si el servicio de n8n declara `networks:`, agrega las mismas redes a este servicio. Luego:
 

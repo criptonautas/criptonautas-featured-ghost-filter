@@ -6,7 +6,7 @@ on:
   pull_request:
 
 env:
-  IMAGE: ghcr.io/somos-criptonautas/criptonautas-featured-ghost-filter
+  IMAGE: ghcr.io/criptonautas/criptonautas-featured-ghost-filter
 
 jobs:
   test-and-publish:

@@ -3,7 +3,7 @@
 # The image is built and published by this repo's GitHub Actions on every push to main.
 services:
   criptonautas-featured-ghost-filter:
-    image: ghcr.io/somos-criptonautas/criptonautas-featured-ghost-filter:latest
+    image: ghcr.io/criptonautas/criptonautas-featured-ghost-filter:latest
     container_name: criptonautas-featured-ghost-filter
     restart: unless-stopped
     read_only: true

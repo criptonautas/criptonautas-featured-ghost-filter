@@ -18,7 +18,7 @@ Faces and third-party material never get either tag.
 
 ## Install
 
-GitHub Actions tests the image and publishes it to `ghcr.io/somos-criptonautas/criptonautas-featured-ghost-filter` on every push to `main`. Nothing is built on the server.
+GitHub Actions tests the image and publishes it to `ghcr.io/criptonautas/criptonautas-featured-ghost-filter` on every push to `main`. Nothing is built on the server.
 
 Paste the service from this repo's [`docker-compose.yml`](docker-compose.yml) under `services:` in the `docker-compose.yml` that runs n8n. If the n8n service lists `networks:`, add the same networks to this service. Then:
 
