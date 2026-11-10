@@ -52,8 +52,8 @@ with urllib.request.urlopen(urllib.request.Request(f"{SERVICE_URL}/filter?seed=c
 print("1. filter ok", variant)
 
 boundary = uuid.uuid4().hex
-body = (f'--{boundary}\r\nContent-Disposition: form-data; name="file"; filename="check-ghost-api.png"\r\n'
-        "Content-Type: image/png\r\n\r\n").encode() + png + f"\r\n--{boundary}--\r\n".encode()
+body = (f'--{boundary}\r\nContent-Disposition: form-data; name="file"; filename="check-ghost-api.webp"\r\n'
+        "Content-Type: image/webp\r\n\r\n").encode() + png + f"\r\n--{boundary}--\r\n".encode()
 code, result = ghost("POST", "/images/upload/", body, f"multipart/form-data; boundary={boundary}")
 assert code == 201, (code, result)
 image_url = result["images"][0]["url"]

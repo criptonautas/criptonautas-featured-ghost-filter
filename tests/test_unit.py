@@ -49,7 +49,7 @@ class ChartFilterTest(unittest.TestCase):
         server.nets.clear()  # would raise KeyError if the line model were used
         png, variant = server.process(sample_image(), "a-post", {"mode": ["chart"]})
         self.assertEqual(variant, {"mode": "chart"})
-        self.assertEqual(Image.open(io.BytesIO(png)).format, "PNG")
+        self.assertEqual(Image.open(io.BytesIO(png)).format, "WEBP")
 
 
 class VariantTest(unittest.TestCase):
@@ -68,11 +68,11 @@ class ProcessTest(unittest.TestCase):
     def setUp(self):
         server.nets.update(thin=FakeNet(), thick=FakeNet())
 
-    def test_png_is_deterministic_and_clean(self):
+    def test_webp_is_deterministic_and_clean(self):
         png, _ = server.process(sample_image(), "a-post", {})
         self.assertEqual(png, server.process(sample_image(), "a-post", {})[0])
         image = Image.open(io.BytesIO(png))
-        self.assertEqual(image.format, "PNG")
+        self.assertEqual(image.format, "WEBP")
         self.assertFalse({"exif", "icc_profile", "XML:com.adobe.xmp"} & set(image.info))
 
     def test_large_image_is_resized(self):

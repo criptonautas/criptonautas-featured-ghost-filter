@@ -32,7 +32,7 @@ output = Image.open(io.BytesIO(png))
 assert output.size == (1600, 896), output.size
 assert {tuple(c) for c in np.array(output).reshape(-1, 3)} <= PALETTE, "colors outside the palette"
 assert not {"exif", "icc_profile", "XML:com.adobe.xmp"} & set(output.info), output.info
-assert headers["Content-Disposition"] == 'inline; filename="test-post.png"', headers["Content-Disposition"]
+assert headers["Content-Disposition"] == 'inline; filename="test-post.webp"', headers["Content-Disposition"]
 assert post("/filter?seed=test-post", image)[1] == png, "same seed must give the same image"
 
 forced = json.loads(post("/filter?seed=test-post&accent=red&stroke=thin", image)[2]["X-Variant"])

@@ -4,7 +4,7 @@
 
 Maintained by Criptonautas. Not affiliated with or endorsed by the Ghost Foundation.
 
-Turns the featured image of a Ghost post into the Criptonautas look: exact 5-color palette, 45° halftone, ink lines and paper grain. Output is a PNG with no metadata.
+Turns the featured image of a Ghost post into the Criptonautas look: exact 5-color palette, 45° halftone, ink lines and paper grain. Output is a lossless WebP with no metadata.
 
 It is a small internal HTTP service. n8n calls it; it is never exposed to the internet.
 
@@ -42,11 +42,11 @@ docker compose up -d criptonautas-featured-ghost-filter
 
 ## API
 
-- `POST /filter?seed=<post-slug>` with the image as the body → PNG.
+- `POST /filter?seed=<post-slug>` with the image as the body → WebP.
   - Optional `&accent=violet|red` and `&stroke=thin|thick` force the variant.
   - `X-Variant` header: the variant used (`accent`, `stroke`, `cell`, `grain`).
   - Optional `&mode=chart` for charts and screenshots: palette only, no halftone or ink lines, dark backgrounds turn to paper. `X-Variant` is then `{"mode": "chart"}`.
-  - `Content-Disposition` carries `<slug>.png`, so Ghost accepts the upload.
+  - `Content-Disposition` carries `<slug>.webp`, so Ghost accepts the upload.
   - Input up to 20 MB; output at most 1600 px wide.
   - Same seed, same image: reprocessing a post never changes its result.
 - `GET /health` → `ok`.

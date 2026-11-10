@@ -1,7 +1,7 @@
 """HTTP service for the internal Docker network. n8n calls it; it is never published to the internet.
 
 POST /filter?seed=<slug>[&accent=violet|red][&stroke=thin|thick][&mode=chart]   body = image bytes
-  -> 200 image/png (exact palette, no metadata), X-Variant header with the chosen variant
+  -> 200 image/webp (lossless: exact palette, no metadata), X-Variant header with the chosen variant
 GET  /health -> 200 ok
 """
 import hashlib
@@ -61,7 +61,7 @@ def process(image_bytes, seed, query):
     if min(rgb.shape[:2]) < 8:
         raise ValueError("image is smaller than 8 px")
     if query.get("mode", [None])[0] == "chart":
-        return to_png(apply_chart_filter(rgb)), {"mode": "chart"}
+        return to_webp(apply_chart_filter(rgb)), {"mode": "chart"}
     variant = choose_variant(seed, query)
 
     scale = min(1, LINE_MODEL_MAX_SIDE / max(rgb.shape[:2]))
@@ -74,12 +74,12 @@ def process(image_bytes, seed, query):
     seed_int = int.from_bytes(hashlib.sha256(seed.encode()).digest()[:4], "big")
     out = apply_brand_filter(rgb, variant["accent"], cell=variant["cell"], seed=seed_int,
                              lines=strokes, grain=variant["grain"])
-    return to_png(out), variant
+    return to_webp(out), variant
 
 
-def to_png(rgb):
+def to_webp(rgb):
     buffer = io.BytesIO()
-    Image.fromarray(rgb).save(buffer, format="PNG", optimize=True)  # PIL writes no EXIF or text chunks here
+    Image.fromarray(rgb).save(buffer, format="WEBP", lossless=True, method=6)  # lossless keeps the exact palette; PIL adds no EXIF/XMP/ICC
     return buffer.getvalue()
 
 
@@ -108,12 +108,12 @@ class Handler(BaseHTTPRequestHandler):
         if not seed or not 0 < length <= MAX_BODY_BYTES:
             return self.send(400, b"missing seed, or body is empty or over 20 MB")
         try:
-            png, variant = process(self.rfile.read(length), seed, query)
+            image, variant = process(self.rfile.read(length), seed, query)
         except (OSError, ValueError) as error:  # unreadable image or impossible size
             return self.send(422, f"cannot process image: {error}".encode())
         file_name = re.sub(r"[^a-z0-9-]", "", seed.lower())[:80] or "image"  # Ghost needs an image extension
-        self.send(200, png, "image/png", {"X-Variant": json.dumps(variant),
-                                          "Content-Disposition": f'inline; filename="{file_name}.png"'})
+        self.send(200, image, "image/webp", {"X-Variant": json.dumps(variant),
+                                          "Content-Disposition": f'inline; filename="{file_name}.webp"'})
 
 
 if __name__ == "__main__":
