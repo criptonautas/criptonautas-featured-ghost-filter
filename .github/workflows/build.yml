@@ -8,6 +8,9 @@ on:
 env:
   IMAGE: ghcr.io/criptonautas/criptonautas-featured-ghost-filter
 
+permissions:
+  contents: read
+
 jobs:
   test-and-publish:
     runs-on: ubuntu-latest
@@ -15,8 +18,10 @@ jobs:
       contents: read
       packages: write
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v4.4.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5.6.0
         with:
           python-version: "3.13"
       - run: pip install -r requirements.txt
@@ -41,6 +46,8 @@ jobs:
 
       - name: Publish to GitHub Container Registry
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+          echo "$GH_TOKEN" | docker login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
           docker push --all-tags $IMAGE
